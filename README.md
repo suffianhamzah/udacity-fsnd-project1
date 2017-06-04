@@ -6,7 +6,7 @@ A website that contains movie trailers of several movies
 # Installation:
 First, either clone or download the project code from this repo:
 
-## Cloning using SSH or HTTPS
+#### Cloning using SSH or HTTPS
 ```
   $ git clone git@github.com:suffianhamzah/udacity-fsnd-project1.git
 ```
