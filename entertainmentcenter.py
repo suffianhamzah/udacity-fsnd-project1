@@ -1,5 +1,8 @@
+import os
+
 import media
 import fresh_tomatoes
+import movieDB_api
 
 spiderman = media.Movie(
     'Spiderman: Homecoming',
@@ -16,9 +19,29 @@ batman = media.Movie(
 inception = media.Movie(
     'Inception',
     'One of Chris Nolan\'s movie, copied some Anime',
-    'https://www.youtube.com/watch?v=YoHD9XEInc0',
+    'http://www.mentalsymmetry.com/forum/wp-content/uploads/2010/09/inception_ver15_xlg.jpg',
     'https://www.youtube.com/watch?v=d3A3-zSOBT4')
 
-movies = [spiderman, batman, inception]
+HARDCODED_MOVIES = [spiderman, batman, inception]
 
+
+def get_movies_from_MovieDB():
+    try:
+        api_key = os.environ['MOVIEDB_API_TOKEN']
+    except KeyError as error:
+        print(error)
+        print('You do not have a environment variable called'
+              ' "MOVIEDB_API_TOKEN", please set it up by getting one at '
+              'https://developers.themoviedb.org.')
+        print('Will use hardcoded movie information instead')
+        return HARDCODED_MOVIES
+
+    movieDB = movieDB_api.MovieDB(api_key)
+    return movieDB.get_movies(list_type='upcoming')
+
+
+# A list that contains the instances of movies above
+movies = get_movies_from_MovieDB()
+
+# We call the open_movies_page method and pass in the list of movies
 fresh_tomatoes.open_movies_page(movies)
