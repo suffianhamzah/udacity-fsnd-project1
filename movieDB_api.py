@@ -9,6 +9,8 @@ class MovieDB():
     This class provides a way to get the latest, popular or top-rated
     movie list using the MovieDB API
 
+    API Docs: https://developers.themoviedb.org
+
     Attributes:
         api_key (str): api_key needed to access the MovieDB API
         BASE_URL (str): base url for accessing the MovieDB API
@@ -34,8 +36,9 @@ class MovieDB():
             list_type (str): A string that specificies movie list type
             num_pages (int): Will affect the number of movie items returned
 
-        Returns a list containing 20 items of latest Movie Objects IF
-        type and num_pages are not specified.
+        Returns:
+            A list containing 20 items of latest Movie Objects IF
+            type and num_pages are not specified.
         """
 
         payload = {
@@ -69,20 +72,32 @@ class MovieDB():
         Parameters:
           movie_list (list:dicts): Contains a list of movie dictionaries
                                    returned by the MovieDB API
+
+        Returns:
+          A list of movie objects. title and overview are encoded to handle
+          unicode characters.
         """
-        return Movie(MovieDB['original_title'], MovieDB['overview'],
+        return Movie(MovieDB['original_title'].encode('utf-8'),
+                     MovieDB['overview'].encode('utf-8'),
                      self._get_image_url(MovieDB['poster_path']),
                      self._get_trailer_url(MovieDB['id']))
 
     def _get_image_url(self, image_filepath):
-        """ returns an image url based on the filepath given"""
+        """Returns an image url based on the filepath given"""
         return self.IMAGE_URL + image_filepath
 
     def _get_trailer_url(self, movie_id):
-        """returns a youtube url trailer based on the movie_id
+        """Returns a youtube url trailer based on the movie_id
 
         Parameters:
             movie_id (int) : IMDB movie id obtained from the MovieDB object
+
+        Returns:
+            A youtube movie_url if found. If not, a placeholder url will be
+            used.
+
+        Raises:
+            Requests.exception Error
         """
         payload = {
             'api_key': self.api_key,
@@ -99,9 +114,9 @@ class MovieDB():
                 if video['type'] == u'Trailer':
                     return youtube_base_url + video['key']
 
-            print "Couldnt find a trailer for the movie, returning placeholder"
-            print "video trailer."
-            return "https://www.youtube.com/watch?v=dQw4w9WgXcQ"
+            print 'Couldnt find a trailer for the movie, returning placeholder'
+            print 'video trailer.'
+            return 'https://www.youtube.com/watch?v=FnCdOQsX5kc'
         else:
             # Throws an error if the movie_id is not illegible
             resp.raise_for_status()

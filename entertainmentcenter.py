@@ -1,4 +1,5 @@
 import os
+import sys
 
 import media
 import fresh_tomatoes
@@ -25,7 +26,19 @@ inception = media.Movie(
 HARDCODED_MOVIES = [spiderman, batman, inception]
 
 
-def get_movies_from_MovieDB():
+def get_movies_from_MovieDB(list_type):
+    """Obtains movies using the MovieDB api or from the hardcoded list
+
+    Parameters:
+      list_type (str): Option that is passed to the MovieDB api to get
+                       movie info
+
+    Returns:
+      A list containing 20 Movie objects
+
+    Raises:
+      KeyError: 'MOVIEDB_API_TOKEN' does not exist
+    """
     try:
         api_key = os.environ['MOVIEDB_API_TOKEN']
     except KeyError as error:
@@ -37,11 +50,34 @@ def get_movies_from_MovieDB():
         return HARDCODED_MOVIES
 
     movieDB = movieDB_api.MovieDB(api_key)
-    return movieDB.get_movies(list_type='upcoming')
+    return movieDB.get_movies(list_type)
 
 
-# A list that contains the instances of movies above
-movies = get_movies_from_MovieDB()
+def main():
+    """ Gets the movie list based on the option a user inputs
+    Inputs:
+      upcoming
+      latest
+      top_rated
+      now_playing
+      popular
+    if no input is supplied, then the list defaults to popular
 
-# We call the open_movies_page method and pass in the list of movies
-fresh_tomatoes.open_movies_page(movies)
+    Raises:
+      IndexError: No argument is found in the index.
+    """
+    try:
+        option = sys.argv[1]
+    except IndexError as error:
+        print(error)
+        print('no option supplied, defaulting to "popular"')
+        option = 'popular'
+    print option
+    movies = get_movies_from_MovieDB(option)
+
+    # We call the open_movies_page method and pass in the list of movies
+    fresh_tomatoes.open_movies_page(movies)
+
+
+if __name__ == '__main__':
+    main()
