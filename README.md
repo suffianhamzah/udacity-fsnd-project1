@@ -11,6 +11,18 @@ First, either clone or download the project code from this repo:
   $ git clone git@github.com:suffianhamzah/udacity-fsnd-project1.git
 ```
 
+#### Installing requests module
+In order to use the MovieDB api feature, you would need to install the requests module.
+
+If using virtualenv:
+```
+  $ pip install requests
+```
+If not:
+```
+ $ sudo pip install requests  # Caution, this will install requests globally.
+```
+
 # Usage:
 To open the website, run this command in your local copy of the repo:
 ```
